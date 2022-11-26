@@ -3,11 +3,15 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import time
 import requests
 import os
+import simplejson
 
 hostName = "0.0.0.0"
 serverPort = os.environ['PORT']
 
 discord_webhook = os.environ['DISCORD_WEBHOOK']
+
+def response_to_json(response):
+    return simplejson.loads(response.rfile.read(int(response.headers.get('Content-Length'))))
 
 class MyServer(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -17,14 +21,17 @@ class MyServer(BaseHTTPRequestHandler):
         self.wfile.write(bytes("<p>RUNNING</p>", "utf-8"))
 
     def do_POST(self):
+        body = response_to_json(self)
+        print(body)
         
-        r = requests.post(
-            discord_webhook,
-            data = {
-                "content" : "Hello"
-            }
-        )
-        self.send_response(r.text)
+        # r = requests.post(
+        #     discord_webhook,
+        #     data = {
+        #         body['message']
+        #     }
+        # )
+        
+        self.send_response(r.status_code)
 
 
 if __name__ == "__main__":        
