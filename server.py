@@ -4,7 +4,7 @@ import time
 import requests
 
 hostName = "localhost"
-serverPort = 8080
+serverPort = 5000
 
 class MyServer(BaseHTTPRequestHandler):
     def do_GET(self):
