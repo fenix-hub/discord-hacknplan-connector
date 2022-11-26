@@ -21,7 +21,8 @@ def build_discord_embedded_field(name, value, inline = False):
     }
 
 def get_workitem_link(workitem_info):
-    return "https://app.hackplan.com/p/{0}/kanban?categoryId={1}&boardId={2}&taskId={3}&tapId=basicinfo".format(
+    
+    return "https://app.hacknplan.com/p/{0}/kanban?categoryId={1}&boardId={2}&taskId={3}&tabId=basicinfo".format(
         workitem_info['ProjectId'], 
         workitem_info['Category']['CategoryId'],
         workitem_info['Board']['BoardId'],
@@ -56,7 +57,7 @@ def on_workitem_created(workitem_info):
     print("Workitem #%s created" % workitem_info["WorkItemId"])
     
     message = build_discord_workitem_message(
-        "Un nuovo Workitem è stato creato",
+        "🎉 Un nuovo Workitem è stato creato",
         workitem_info
     )
     
@@ -69,7 +70,7 @@ def on_workitem_updated(workitem_info):
     print("Workitem #%s updated" % workitem_info["WorkItemId"])
 
     message = build_discord_workitem_message(
-        "Un Workitem è stato aggiornato",
+        "🟡 Un Workitem è stato aggiornato",
         workitem_info
     )
     
@@ -82,7 +83,7 @@ def on_workitem_deleted(workitem_info):
     print("Workitem #%s deleted" % workitem_info["WorkItemId"])
 
     message = build_discord_workitem_message(
-        "Un Workitem è stato eliminato",
+        "⛔ Un Workitem è stato eliminato",
         workitem_info
     )
     
