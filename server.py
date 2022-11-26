@@ -32,6 +32,7 @@ def build_discord_message(content, workitem_info):
         "content": content,
         "embeds": [
             {
+                "description" : "Informazioni del WorkItem",
                 "fields" : [
                     build_discord_embedded_field("Titolo", workitem_info['Title']),
                     build_discord_embedded_field("Id", "#%s" % workitem_info['WorkItemId']),
@@ -43,24 +44,26 @@ def build_discord_message(content, workitem_info):
 
 def on_workitem_created(workitem_info):
     print("Workitem #%s created" % workitem_info["WorkItemId"])
+    data = build_discord_message(
+        "Un nuovo Workitem è stato creato",
+        workitem_info
+    )
+    print(data)
     r = requests.post(
         discord_webhook,
-        data = build_discord_message(
-            "Un nuovo Workitem è stato creato",
-            workitem_info
-        )
+        data = data 
     )
-    return r
+    return r.status_code
 
 
 def on_workitem_updated(workitem_info):
     print("Workitem #%s updated" % workitem_info["WorkItemId"])
-    return
+    return 200
 
 
 def on_workitem_deleted(workitem_info):
     print("Workitem #%s updated" % workitem_info["WorkItemId"])
-    return
+    return 200
 
 
 class MyServer(BaseHTTPRequestHandler):
@@ -74,17 +77,17 @@ class MyServer(BaseHTTPRequestHandler):
         body = response_to_json(self)
         
         hacknplan_event = self.headers.get('X-Hacknplan-Event')
-        response = None
+        response_code = 400
         
         match hacknplan_event:
             case 'workitem.created':
-                response = on_workitem_created(body)
+                response_code = on_workitem_created(body)
             case 'workitem.updated':
-                response = on_workitem_updated(body)
+                response_code = on_workitem_updated(body)
             case 'workitem.deleted':
-                response = on_workitem_deleted(body)    
+                response_code = on_workitem_deleted(body)    
         
-        self.send_response(response.status_code)
+        self.send_response(response_code)
 
 
 if __name__ == "__main__":        
