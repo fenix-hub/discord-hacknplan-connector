@@ -45,12 +45,10 @@ def on_workitem_created(workitem_info):
     print("Workitem #%s created" % workitem_info["WorkItemId"])
     r = requests.post(
         discord_webhook,
-        data = {
-            build_discord_message(
-                "Un nuovo Workitem è stato creato",
-                workitem_info
-            )
-        }
+        data = build_discord_message(
+            "Un nuovo Workitem è stato creato",
+            workitem_info
+        )
     )
     return r
 
