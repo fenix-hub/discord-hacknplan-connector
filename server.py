@@ -20,8 +20,9 @@ def build_discord_embedded_field(name, value):
     }
 
 def get_workitem_link(workitem_info):
-    return "https://app.hackplan.com/p/{0}/kanban?categoryId=$Category.CategoryId}&boardId={1}&taskId={2}&tapId=basicinfo".format(
+    return "https://app.hackplan.com/p/{0}/kanban?categoryId={1}&boardId={2}&taskId={3}&tapId=basicinfo".format(
         workitem_info['ProjectId'], 
+        workitem_info['Category']['CategoryId'],
         workitem_info['Board']['BoardId'],
         workitem_info['WorkItemId']
     )
