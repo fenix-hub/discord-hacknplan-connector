@@ -23,6 +23,7 @@ class MyServer(BaseHTTPRequestHandler):
     def do_POST(self):
         body = response_to_json(self)
         print(body)
+        print(self.headers)
         
         # r = requests.post(
         #     discord_webhook,
@@ -31,7 +32,8 @@ class MyServer(BaseHTTPRequestHandler):
         #     }
         # )
         
-        self.send_response(r.status_code)
+        # self.send_response(r.status_code)
+        self.send_response(200)
 
 
 if __name__ == "__main__":        
