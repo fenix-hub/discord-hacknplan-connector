@@ -4,7 +4,7 @@ import time
 import requests
 import os
 
-hostName = "localhost"
+hostName = "0.0.0.0"
 serverPort = os.environ['PORT']
 
 class MyServer(BaseHTTPRequestHandler):
