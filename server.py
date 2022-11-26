@@ -50,7 +50,7 @@ def build_discord_workitem_message(content, workitem_info):
 def post_discord_message(discord_webhook, json_data):
     response = requests.post(discord_webhook, json = json_data)
     print("Response Code > %d " % response.status_code)
-    print("Response Message > %s" % response.content)
+    print("Response Message > %s" % response_to_json(response.content))
     return response
 
 def on_workitem_created(workitem_info):
@@ -95,23 +95,25 @@ def on_workitem_deleted(workitem_info):
 class MyServer(BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
-        self.send_header("Content-type", "text/html")
+        self.send_header("Content-type", "text/plain")
         self.end_headers()
-        self.wfile.write(bytes("<p>RUNNING</p>", "utf-8"))
+        self.wfile.write(bytes("ok", "utf-8"))
 
     def do_POST(self):
-        body = response_to_json(self)
-        
+        hacknplan_body = response_to_json(self)
         hacknplan_event = self.headers.get('X-Hacknplan-Event')
+        
+        print("Webhook from hacknplan: %s > %s" % (hacknplan_event, hacknplan_body))
+        
         response_code = 500
         
         match hacknplan_event:
             case 'workitem.created':
-                response_code = on_workitem_created(body)
+                response_code = on_workitem_created(hacknplan_body)
             case 'workitem.updated':
-                response_code = on_workitem_updated(body)
+                response_code = on_workitem_updated(hacknplan_body)
             case 'workitem.deleted':
-                response_code = on_workitem_deleted(body)    
+                response_code = on_workitem_deleted(hacknplan_body)    
         
         self.send_response(response_code)
 
