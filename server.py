@@ -52,9 +52,11 @@ def on_workitem_created(workitem_info):
     print(data)
     r = requests.post(
         discord_webhook,
-        data = data 
+        json = data 
     )
-    print(r)
+    print(r.status_code)
+    print(r.content)
+    
     return r.status_code
 
 
@@ -64,7 +66,7 @@ def on_workitem_updated(workitem_info):
 
 
 def on_workitem_deleted(workitem_info):
-    print("Workitem #%s updated" % workitem_info["WorkItemId"])
+    print("Workitem #%s deleted" % workitem_info["WorkItemId"])
     return 200
 
 
