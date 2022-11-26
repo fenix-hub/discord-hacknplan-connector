@@ -2,9 +2,10 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import time
 import requests
+import os
 
 hostName = "localhost"
-serverPort = 5000
+serverPort = os.environ['PORT']
 
 class MyServer(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -25,7 +26,7 @@ class MyServer(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":        
-    webServer = HTTPServer((hostName, serverPort), MyServer)
+    webServer = HTTPServer((hostName, int(serverPort)), MyServer)
     print("Server started http://%s:%s" % (hostName, serverPort))
 
     try:
