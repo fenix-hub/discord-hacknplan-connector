@@ -32,6 +32,7 @@ def build_discord_message(content, workitem_info):
         "content": content,
         "embeds": [
             {
+                "title" : "Workitem #%s" % workitem_info['WorkItemId'],
                 "description" : "Informazioni del WorkItem",
                 "fields" : [
                     build_discord_embedded_field("Titolo", workitem_info['Title']),
@@ -53,6 +54,7 @@ def on_workitem_created(workitem_info):
         discord_webhook,
         data = data 
     )
+    print(r)
     return r.status_code
 
 
@@ -77,7 +79,7 @@ class MyServer(BaseHTTPRequestHandler):
         body = response_to_json(self)
         
         hacknplan_event = self.headers.get('X-Hacknplan-Event')
-        response_code = 400
+        response_code = 500
         
         match hacknplan_event:
             case 'workitem.created':
