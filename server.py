@@ -36,7 +36,7 @@ def build_discord_workitem_message(content, workitem_info):
                 "title" : "Workitem #%s" % workitem_info['WorkItemId'],
                 "description" : "Informazioni del WorkItem",
                 "fields" : [
-                    build_discord_embedded_field("Titolo", workitem_info['Title']), True,
+                    build_discord_embedded_field("Titolo", workitem_info['Title'], True),
                     build_discord_embedded_field("Id", "#%s" % workitem_info['WorkItemId'], True),
                     build_discord_embedded_field("Link", "[👉 hacknplan](%s)" % get_workitem_link(workitem_info), True)
                 ]
