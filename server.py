@@ -7,6 +7,8 @@ import os
 hostName = "0.0.0.0"
 serverPort = os.environ['PORT']
 
+discord_webhook = os.environ['DISCORD_WEBHOOK']
+
 class MyServer(BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
@@ -17,7 +19,7 @@ class MyServer(BaseHTTPRequestHandler):
     def do_POST(self):
         
         r = requests.post(
-            '',
+            discord_webhook,
             data = {
                 "content" : "Hello"
             }
