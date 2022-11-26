@@ -13,10 +13,11 @@ discord_webhook = os.environ['DISCORD_WEBHOOK']
 def response_to_json(response):
     return simplejson.loads(response.rfile.read(int(response.headers.get('Content-Length'))))
 
-def build_discord_embedded_field(name, value):
+def build_discord_embedded_field(name, value, inline = False):
     return {
         "name": name,
-        "value": value
+        "value": value,
+        "inline": inline
     }
 
 def get_workitem_link(workitem_info):
@@ -27,47 +28,67 @@ def get_workitem_link(workitem_info):
         workitem_info['WorkItemId']
     )
 
-def build_discord_message(content, workitem_info):
-    return {
+def build_discord_workitem_message(content, workitem_info):
+    message = {
         "content": content,
         "embeds": [
             {
                 "title" : "Workitem #%s" % workitem_info['WorkItemId'],
                 "description" : "Informazioni del WorkItem",
                 "fields" : [
-                    build_discord_embedded_field("Titolo", workitem_info['Title']),
-                    build_discord_embedded_field("Id", "#%s" % workitem_info['WorkItemId']),
-                    build_discord_embedded_field("Link", "[👉 hacknplan](%s)" % get_workitem_link(workitem_info))
+                    build_discord_embedded_field("Titolo", workitem_info['Title']), True,
+                    build_discord_embedded_field("Id", "#%s" % workitem_info['WorkItemId'], True),
+                    build_discord_embedded_field("Link", "[👉 hacknplan](%s)" % get_workitem_link(workitem_info), True)
                 ]
             }
         ]
     }
+    print(message)
+    return message
+
+def post_discord_message(discord_webhook, json_data):
+    response = requests.post(discord_webhook, json = json_data)
+    print("Response Code > %d " % response.status_code)
+    print("Response Message > %s" % response.content)
+    return response
 
 def on_workitem_created(workitem_info):
     print("Workitem #%s created" % workitem_info["WorkItemId"])
-    data = build_discord_message(
+    
+    message = build_discord_workitem_message(
         "Un nuovo Workitem è stato creato",
         workitem_info
     )
-    print(data)
-    r = requests.post(
-        discord_webhook,
-        json = data 
-    )
-    print(r.status_code)
-    print(r.content)
+    
+    r = post_discord_message(discord_webhook, message)
     
     return r.status_code
 
 
 def on_workitem_updated(workitem_info):
     print("Workitem #%s updated" % workitem_info["WorkItemId"])
-    return 200
+
+    message = build_discord_workitem_message(
+        "Un Workitem è stato aggiornato",
+        workitem_info
+    )
+    
+    r = post_discord_message(discord_webhook, message)
+    
+    return r.status_code
 
 
 def on_workitem_deleted(workitem_info):
     print("Workitem #%s deleted" % workitem_info["WorkItemId"])
-    return 200
+
+    message = build_discord_workitem_message(
+        "Un Workitem è stato eliminato",
+        workitem_info
+    )
+    
+    r = post_discord_message(discord_webhook, message)
+    
+    return r.status_code
 
 
 class MyServer(BaseHTTPRequestHandler):
