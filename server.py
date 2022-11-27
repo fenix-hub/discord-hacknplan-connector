@@ -50,7 +50,7 @@ def build_discord_workitem_message(content, workitem_info):
 def post_discord_message(discord_webhook, json_data):
     response = requests.post(discord_webhook, json = json_data)
     print("Response Code > %d " % response.status_code)
-    print("Response Message > %s" % response_to_json(response.content))
+    print("Response Message > %s" % response_to_json(response))
     return response
 
 def on_workitem_created(workitem_info):
